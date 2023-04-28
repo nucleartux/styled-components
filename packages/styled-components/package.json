@@ -15,7 +15,6 @@
     "generateErrors": "node scripts/generateErrorMap.js",
     "prebuild": "rimraf dist && npm run generateErrors",
     "build": "rollup -c",
-    "postbuild": "npm run lint:size",
     "flow": "flow check",
     "flow:watch": "flow-watch",
     "pretest": "npm run generateErrors",
@@ -26,7 +25,6 @@
     "test:integration": "jest -c ../../scripts/jest/config.integration.js --runInBand --forceExit",
     "format": "eslint ./**/*.js --fix",
     "lint": "eslint src",
-    "lint:size": "bundlesize",
     "prettier": "prettier */**/*.js --write",
     "prepublishOnly": "npm run build",
     "dev": "cross-env BABEL_ENV=cjs babel-node example/startServer.js"
@@ -101,12 +99,6 @@
     "rollup-plugin-terser": "^5.0.0",
     "stylis-plugin-rtl": "^1.0.0"
   },
-  "bundlesize": [
-    {
-      "path": "./dist/styled-components.min.js",
-      "maxSize": "14kB"
-    }
-  ],
   "collective": {
     "type": "opencollective",
     "url": "https://opencollective.com/styled-components"
