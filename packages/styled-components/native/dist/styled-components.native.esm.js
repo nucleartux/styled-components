@@ -2,7 +2,7 @@ import transformDeclPairs from 'css-to-react-native';
 import { typeOf, isElement, isValidElementType } from 'react-is';
 import React, { useContext, useMemo, createElement, Component } from 'react';
 import 'shallowequal';
-import Stylis from '@emotion/stylis';
+import { prefixer, stringify as stringify$1, RULESET, compile, serialize, middleware, rulesheet } from 'stylis';
 import unitless from '@emotion/unitless';
 import supportsColor from 'supports-color';
 import hoist from 'hoist-non-react-statics';
@@ -729,96 +729,40 @@ var StyleSheet = /*#__PURE__*/function () {
 var EMPTY_ARRAY = Object.freeze([]);
 var EMPTY_OBJECT = Object.freeze({});
 
+var AMP_REGEX = /&/g;
+var COMMENT_REGEX = /^\s*\/\/.*$/gm;
 /**
- * MIT License
- *
- * Copyright (c) 2016 Sultan Tarimo
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
- * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * Takes an element and recurses through it's rules added the namespace to the start of each selector.
+ * Takes into account media queries by recursing through child rules if they are present.
  */
 
-/* eslint-disable */
-function insertRulePlugin (insertRule) {
-  var delimiter = '/*|*/';
-  var needle = delimiter + "}";
+function recursivelySetNamepace(compiled, namespace) {
+  return compiled.map(function (rule) {
+    if (rule.type === 'rule') {
+      // add the namespace to the start
+      rule.value = namespace + " " + rule.value; // add the namespace after each comma for subsequent selectors.
+      // @ts-expect-error we target modern browsers but intentionally transpile to ES5 for speed
 
-  function toSheet(block) {
-    if (block) {
-      try {
-        insertRule(block + "}");
-      } catch (e) {}
+      rule.value = rule.value.replaceAll(',', "," + namespace + " ");
+      rule.props = rule.props.map(function (prop) {
+        return namespace + " " + prop;
+      });
     }
-  }
 
-  return function ruleSheet(context, content, selectors, parents, line, column, length, ns, depth, at) {
-    switch (context) {
-      // property
-      case 1:
-        // @import
-        if (depth === 0 && content.charCodeAt(0) === 64) return insertRule(content + ";"), '';
-        break;
-      // selector
-
-      case 2:
-        if (ns === 0) return content + delimiter;
-        break;
-      // at-rule
-
-      case 3:
-        switch (ns) {
-          // @font-face, @page
-          case 102:
-          case 112:
-            return insertRule(selectors[0] + content), '';
-
-          default:
-            return content + (at === 0 ? delimiter : '');
-        }
-
-      case -2:
-        content.split(needle).forEach(toSheet);
+    if (Array.isArray(rule.children) && rule.type !== '@keyframes') {
+      rule.children = recursivelySetNamepace(rule.children, namespace);
     }
-  };
+
+    return rule;
+  });
 }
 
-var COMMENT_REGEX = /^\s*\/\/.*$/gm;
 function createStylisInstance(_temp) {
   var _ref = _temp === void 0 ? EMPTY_OBJECT : _temp,
       _ref$options = _ref.options,
       options = _ref$options === void 0 ? EMPTY_OBJECT : _ref$options,
       _ref$plugins = _ref.plugins,
       plugins = _ref$plugins === void 0 ? EMPTY_ARRAY : _ref$plugins;
-
-  var stylis = new Stylis(options); // Wrap `insertRulePlugin to build a list of rules,
-  // and then make our own plugin to return the rules. This
-  // makes it easier to hook into the existing SSR architecture
-
-  var parsingRules = []; // eslint-disable-next-line consistent-return
-
-  var returnRulesPlugin = function returnRulesPlugin(context) {
-    if (context === -2) {
-      var parsedRules = parsingRules;
-      parsingRules = [];
-      return parsedRules;
-    }
-  };
-
-  var parseRulesPlugin = insertRulePlugin(function (rule) {
-    parsingRules.push(rule);
-  });
 
   var _componentId;
 
@@ -827,10 +771,14 @@ function createStylisInstance(_temp) {
   var _selectorRegexp;
 
   var selfReferenceReplacer = function selfReferenceReplacer(match, offset, string) {
-    if ( // the first self-ref is always untouched
-    offset > 0 && // there should be at least two self-refs to do a replacement (.b > .b)
-    string.slice(0, offset).indexOf(_selector) !== -1 && // no consecutive self refs (.b.b); that is a precedence boost and treated differently
-    string.slice(offset - _selector.length, offset) !== _selector) {
+    if (
+    /**
+     * We only want to refer to the static class directly in the following scenarios:
+     *
+     * 1. The selector is alone on the line `& { color: red; }`
+     * 2. The selector is part of a self-reference selector `& + & { color: red; }`
+     */
+    string === _selector || string.startsWith(_selector) && string.endsWith(_selector) && string.replaceAll(_selector, '').length > 0) {
       return "." + _componentId;
     }
 
@@ -846,35 +794,65 @@ function createStylisInstance(_temp) {
    * The second ampersand should be a reference to the static component class. stylis
    * has no knowledge of static class so we have to intelligently replace the base selector.
    *
-   * https://github.com/thysultan/stylis.js#plugins <- more info about the context phase values
-   * "2" means this plugin is taking effect at the very end after all other processing is complete
+   * https://github.com/thysultan/stylis.js/tree/v4.0.2#abstract-syntax-structure
    */
 
 
-  var selfReferenceReplacementPlugin = function selfReferenceReplacementPlugin(context, _, selectors) {
-    if (context === 2 && selectors.length && selectors[0].lastIndexOf(_selector) > 0) {
-      // eslint-disable-next-line no-param-reassign
-      selectors[0] = selectors[0].replace(_selectorRegexp, selfReferenceReplacer);
+  var selfReferenceReplacementPlugin = function selfReferenceReplacementPlugin(element) {
+    if (element.type === RULESET && element.value.includes('&')) {
+      element.props[0] = element.props[0] // catch any hanging references that stylis missed
+      .replace(AMP_REGEX, _selector).replace(_selectorRegexp, selfReferenceReplacer);
     }
   };
 
-  stylis.use([].concat(plugins, [selfReferenceReplacementPlugin, parseRulesPlugin, returnRulesPlugin]));
+  var middlewares = plugins.slice();
+  middlewares.push(selfReferenceReplacementPlugin);
+  /**
+   * Enables automatic vendor-prefixing for styles.
+   */
 
-  function stringifyRules(css, selector, prefix, componentId) {
+  if (options.prefix) {
+    middlewares.push(prefixer);
+  }
+
+  middlewares.push(stringify$1);
+
+  var stringifyRules = function stringifyRules(css, selector,
+  /**
+   * This "prefix" referes to a _selector_ prefix.
+   */
+  prefix, componentId) {
+    if (selector === void 0) {
+      selector = '';
+    }
+
+    if (prefix === void 0) {
+      prefix = '';
+    }
+
     if (componentId === void 0) {
       componentId = '&';
     }
 
-    var flatCSS = css.replace(COMMENT_REGEX, '');
-    var cssStr = selector && prefix ? prefix + " " + selector + " { " + flatCSS + " }" : flatCSS; // stylis has no concept of state to be passed to plugins
-    // but since JS is single=threaded, we can rely on that to ensure
+    // stylis has no concept of state to be passed to plugins
+    // but since JS is single-threaded, we can rely on that to ensure
     // these properties stay in sync with the current stylis run
-
     _componentId = componentId;
     _selector = selector;
     _selectorRegexp = new RegExp("\\" + _selector + "\\b", 'g');
-    return stylis(prefix || !selector ? '' : selector, cssStr);
-  }
+    var flatCSS = css.replace(COMMENT_REGEX, '');
+    var compiled = compile(prefix || selector ? prefix + " " + selector + " { " + flatCSS + " }" : flatCSS);
+
+    if (options.namespace) {
+      compiled = recursivelySetNamepace(compiled, options.namespace);
+    }
+
+    var stack = [];
+    serialize(compiled, middleware(middlewares.concat(rulesheet(function (value) {
+      return stack.push(value);
+    }))));
+    return stack;
+  };
 
   stringifyRules.hash = plugins.length ? plugins.reduce(function (acc, plugin) {
     if (!plugin.name) {

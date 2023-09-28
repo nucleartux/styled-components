@@ -711,619 +711,7 @@
     return true;
   };
 
-  function stylis_min (W) {
-    function M(d, c, e, h, a) {
-      for (var m = 0, b = 0, v = 0, n = 0, q, g, x = 0, K = 0, k, u = k = q = 0, l = 0, r = 0, I = 0, t = 0, B = e.length, J = B - 1, y, f = '', p = '', F = '', G = '', C; l < B;) {
-        g = e.charCodeAt(l);
-        l === J && 0 !== b + n + v + m && (0 !== b && (g = 47 === b ? 10 : 47), n = v = m = 0, B++, J++);
-
-        if (0 === b + n + v + m) {
-          if (l === J && (0 < r && (f = f.replace(N, '')), 0 < f.trim().length)) {
-            switch (g) {
-              case 32:
-              case 9:
-              case 59:
-              case 13:
-              case 10:
-                break;
-
-              default:
-                f += e.charAt(l);
-            }
-
-            g = 59;
-          }
-
-          switch (g) {
-            case 123:
-              f = f.trim();
-              q = f.charCodeAt(0);
-              k = 1;
-
-              for (t = ++l; l < B;) {
-                switch (g = e.charCodeAt(l)) {
-                  case 123:
-                    k++;
-                    break;
-
-                  case 125:
-                    k--;
-                    break;
-
-                  case 47:
-                    switch (g = e.charCodeAt(l + 1)) {
-                      case 42:
-                      case 47:
-                        a: {
-                          for (u = l + 1; u < J; ++u) {
-                            switch (e.charCodeAt(u)) {
-                              case 47:
-                                if (42 === g && 42 === e.charCodeAt(u - 1) && l + 2 !== u) {
-                                  l = u + 1;
-                                  break a;
-                                }
-
-                                break;
-
-                              case 10:
-                                if (47 === g) {
-                                  l = u + 1;
-                                  break a;
-                                }
-
-                            }
-                          }
-
-                          l = u;
-                        }
-
-                    }
-
-                    break;
-
-                  case 91:
-                    g++;
-
-                  case 40:
-                    g++;
-
-                  case 34:
-                  case 39:
-                    for (; l++ < J && e.charCodeAt(l) !== g;) {
-                    }
-
-                }
-
-                if (0 === k) break;
-                l++;
-              }
-
-              k = e.substring(t, l);
-              0 === q && (q = (f = f.replace(ca, '').trim()).charCodeAt(0));
-
-              switch (q) {
-                case 64:
-                  0 < r && (f = f.replace(N, ''));
-                  g = f.charCodeAt(1);
-
-                  switch (g) {
-                    case 100:
-                    case 109:
-                    case 115:
-                    case 45:
-                      r = c;
-                      break;
-
-                    default:
-                      r = O;
-                  }
-
-                  k = M(c, r, k, g, a + 1);
-                  t = k.length;
-                  0 < A && (r = X(O, f, I), C = H(3, k, r, c, D, z, t, g, a, h), f = r.join(''), void 0 !== C && 0 === (t = (k = C.trim()).length) && (g = 0, k = ''));
-                  if (0 < t) switch (g) {
-                    case 115:
-                      f = f.replace(da, ea);
-
-                    case 100:
-                    case 109:
-                    case 45:
-                      k = f + '{' + k + '}';
-                      break;
-
-                    case 107:
-                      f = f.replace(fa, '$1 $2');
-                      k = f + '{' + k + '}';
-                      k = 1 === w || 2 === w && L('@' + k, 3) ? '@-webkit-' + k + '@' + k : '@' + k;
-                      break;
-
-                    default:
-                      k = f + k, 112 === h && (k = (p += k, ''));
-                  } else k = '';
-                  break;
-
-                default:
-                  k = M(c, X(c, f, I), k, h, a + 1);
-              }
-
-              F += k;
-              k = I = r = u = q = 0;
-              f = '';
-              g = e.charCodeAt(++l);
-              break;
-
-            case 125:
-            case 59:
-              f = (0 < r ? f.replace(N, '') : f).trim();
-              if (1 < (t = f.length)) switch (0 === u && (q = f.charCodeAt(0), 45 === q || 96 < q && 123 > q) && (t = (f = f.replace(' ', ':')).length), 0 < A && void 0 !== (C = H(1, f, c, d, D, z, p.length, h, a, h)) && 0 === (t = (f = C.trim()).length) && (f = '\x00\x00'), q = f.charCodeAt(0), g = f.charCodeAt(1), q) {
-                case 0:
-                  break;
-
-                case 64:
-                  if (105 === g || 99 === g) {
-                    G += f + e.charAt(l);
-                    break;
-                  }
-
-                default:
-                  58 !== f.charCodeAt(t - 1) && (p += P(f, q, g, f.charCodeAt(2)));
-              }
-              I = r = u = q = 0;
-              f = '';
-              g = e.charCodeAt(++l);
-          }
-        }
-
-        switch (g) {
-          case 13:
-          case 10:
-            47 === b ? b = 0 : 0 === 1 + q && 107 !== h && 0 < f.length && (r = 1, f += '\x00');
-            0 < A * Y && H(0, f, c, d, D, z, p.length, h, a, h);
-            z = 1;
-            D++;
-            break;
-
-          case 59:
-          case 125:
-            if (0 === b + n + v + m) {
-              z++;
-              break;
-            }
-
-          default:
-            z++;
-            y = e.charAt(l);
-
-            switch (g) {
-              case 9:
-              case 32:
-                if (0 === n + m + b) switch (x) {
-                  case 44:
-                  case 58:
-                  case 9:
-                  case 32:
-                    y = '';
-                    break;
-
-                  default:
-                    32 !== g && (y = ' ');
-                }
-                break;
-
-              case 0:
-                y = '\\0';
-                break;
-
-              case 12:
-                y = '\\f';
-                break;
-
-              case 11:
-                y = '\\v';
-                break;
-
-              case 38:
-                0 === n + b + m && (r = I = 1, y = '\f' + y);
-                break;
-
-              case 108:
-                if (0 === n + b + m + E && 0 < u) switch (l - u) {
-                  case 2:
-                    112 === x && 58 === e.charCodeAt(l - 3) && (E = x);
-
-                  case 8:
-                    111 === K && (E = K);
-                }
-                break;
-
-              case 58:
-                0 === n + b + m && (u = l);
-                break;
-
-              case 44:
-                0 === b + v + n + m && (r = 1, y += '\r');
-                break;
-
-              case 34:
-              case 39:
-                0 === b && (n = n === g ? 0 : 0 === n ? g : n);
-                break;
-
-              case 91:
-                0 === n + b + v && m++;
-                break;
-
-              case 93:
-                0 === n + b + v && m--;
-                break;
-
-              case 41:
-                0 === n + b + m && v--;
-                break;
-
-              case 40:
-                if (0 === n + b + m) {
-                  if (0 === q) switch (2 * x + 3 * K) {
-                    case 533:
-                      break;
-
-                    default:
-                      q = 1;
-                  }
-                  v++;
-                }
-
-                break;
-
-              case 64:
-                0 === b + v + n + m + u + k && (k = 1);
-                break;
-
-              case 42:
-              case 47:
-                if (!(0 < n + m + v)) switch (b) {
-                  case 0:
-                    switch (2 * g + 3 * e.charCodeAt(l + 1)) {
-                      case 235:
-                        b = 47;
-                        break;
-
-                      case 220:
-                        t = l, b = 42;
-                    }
-
-                    break;
-
-                  case 42:
-                    47 === g && 42 === x && t + 2 !== l && (33 === e.charCodeAt(t + 2) && (p += e.substring(t, l + 1)), y = '', b = 0);
-                }
-            }
-
-            0 === b && (f += y);
-        }
-
-        K = x;
-        x = g;
-        l++;
-      }
-
-      t = p.length;
-
-      if (0 < t) {
-        r = c;
-        if (0 < A && (C = H(2, p, r, d, D, z, t, h, a, h), void 0 !== C && 0 === (p = C).length)) return G + p + F;
-        p = r.join(',') + '{' + p + '}';
-
-        if (0 !== w * E) {
-          2 !== w || L(p, 2) || (E = 0);
-
-          switch (E) {
-            case 111:
-              p = p.replace(ha, ':-moz-$1') + p;
-              break;
-
-            case 112:
-              p = p.replace(Q, '::-webkit-input-$1') + p.replace(Q, '::-moz-$1') + p.replace(Q, ':-ms-input-$1') + p;
-          }
-
-          E = 0;
-        }
-      }
-
-      return G + p + F;
-    }
-
-    function X(d, c, e) {
-      var h = c.trim().split(ia);
-      c = h;
-      var a = h.length,
-          m = d.length;
-
-      switch (m) {
-        case 0:
-        case 1:
-          var b = 0;
-
-          for (d = 0 === m ? '' : d[0] + ' '; b < a; ++b) {
-            c[b] = Z(d, c[b], e).trim();
-          }
-
-          break;
-
-        default:
-          var v = b = 0;
-
-          for (c = []; b < a; ++b) {
-            for (var n = 0; n < m; ++n) {
-              c[v++] = Z(d[n] + ' ', h[b], e).trim();
-            }
-          }
-
-      }
-
-      return c;
-    }
-
-    function Z(d, c, e) {
-      var h = c.charCodeAt(0);
-      33 > h && (h = (c = c.trim()).charCodeAt(0));
-
-      switch (h) {
-        case 38:
-          return c.replace(F, '$1' + d.trim());
-
-        case 58:
-          return d.trim() + c.replace(F, '$1' + d.trim());
-
-        default:
-          if (0 < 1 * e && 0 < c.indexOf('\f')) return c.replace(F, (58 === d.charCodeAt(0) ? '' : '$1') + d.trim());
-      }
-
-      return d + c;
-    }
-
-    function P(d, c, e, h) {
-      var a = d + ';',
-          m = 2 * c + 3 * e + 4 * h;
-
-      if (944 === m) {
-        d = a.indexOf(':', 9) + 1;
-        var b = a.substring(d, a.length - 1).trim();
-        b = a.substring(0, d).trim() + b + ';';
-        return 1 === w || 2 === w && L(b, 1) ? '-webkit-' + b + b : b;
-      }
-
-      if (0 === w || 2 === w && !L(a, 1)) return a;
-
-      switch (m) {
-        case 1015:
-          return 97 === a.charCodeAt(10) ? '-webkit-' + a + a : a;
-
-        case 951:
-          return 116 === a.charCodeAt(3) ? '-webkit-' + a + a : a;
-
-        case 963:
-          return 110 === a.charCodeAt(5) ? '-webkit-' + a + a : a;
-
-        case 1009:
-          if (100 !== a.charCodeAt(4)) break;
-
-        case 969:
-        case 942:
-          return '-webkit-' + a + a;
-
-        case 978:
-          return '-webkit-' + a + '-moz-' + a + a;
-
-        case 1019:
-        case 983:
-          return '-webkit-' + a + '-moz-' + a + '-ms-' + a + a;
-
-        case 883:
-          if (45 === a.charCodeAt(8)) return '-webkit-' + a + a;
-          if (0 < a.indexOf('image-set(', 11)) return a.replace(ja, '$1-webkit-$2') + a;
-          break;
-
-        case 932:
-          if (45 === a.charCodeAt(4)) switch (a.charCodeAt(5)) {
-            case 103:
-              return '-webkit-box-' + a.replace('-grow', '') + '-webkit-' + a + '-ms-' + a.replace('grow', 'positive') + a;
-
-            case 115:
-              return '-webkit-' + a + '-ms-' + a.replace('shrink', 'negative') + a;
-
-            case 98:
-              return '-webkit-' + a + '-ms-' + a.replace('basis', 'preferred-size') + a;
-          }
-          return '-webkit-' + a + '-ms-' + a + a;
-
-        case 964:
-          return '-webkit-' + a + '-ms-flex-' + a + a;
-
-        case 1023:
-          if (99 !== a.charCodeAt(8)) break;
-          b = a.substring(a.indexOf(':', 15)).replace('flex-', '').replace('space-between', 'justify');
-          return '-webkit-box-pack' + b + '-webkit-' + a + '-ms-flex-pack' + b + a;
-
-        case 1005:
-          return ka.test(a) ? a.replace(aa, ':-webkit-') + a.replace(aa, ':-moz-') + a : a;
-
-        case 1e3:
-          b = a.substring(13).trim();
-          c = b.indexOf('-') + 1;
-
-          switch (b.charCodeAt(0) + b.charCodeAt(c)) {
-            case 226:
-              b = a.replace(G, 'tb');
-              break;
-
-            case 232:
-              b = a.replace(G, 'tb-rl');
-              break;
-
-            case 220:
-              b = a.replace(G, 'lr');
-              break;
-
-            default:
-              return a;
-          }
-
-          return '-webkit-' + a + '-ms-' + b + a;
-
-        case 1017:
-          if (-1 === a.indexOf('sticky', 9)) break;
-
-        case 975:
-          c = (a = d).length - 10;
-          b = (33 === a.charCodeAt(c) ? a.substring(0, c) : a).substring(d.indexOf(':', 7) + 1).trim();
-
-          switch (m = b.charCodeAt(0) + (b.charCodeAt(7) | 0)) {
-            case 203:
-              if (111 > b.charCodeAt(8)) break;
-
-            case 115:
-              a = a.replace(b, '-webkit-' + b) + ';' + a;
-              break;
-
-            case 207:
-            case 102:
-              a = a.replace(b, '-webkit-' + (102 < m ? 'inline-' : '') + 'box') + ';' + a.replace(b, '-webkit-' + b) + ';' + a.replace(b, '-ms-' + b + 'box') + ';' + a;
-          }
-
-          return a + ';';
-
-        case 938:
-          if (45 === a.charCodeAt(5)) switch (a.charCodeAt(6)) {
-            case 105:
-              return b = a.replace('-items', ''), '-webkit-' + a + '-webkit-box-' + b + '-ms-flex-' + b + a;
-
-            case 115:
-              return '-webkit-' + a + '-ms-flex-item-' + a.replace(ba, '') + a;
-
-            default:
-              return '-webkit-' + a + '-ms-flex-line-pack' + a.replace('align-content', '').replace(ba, '') + a;
-          }
-          break;
-
-        case 973:
-        case 989:
-          if (45 !== a.charCodeAt(3) || 122 === a.charCodeAt(4)) break;
-
-        case 931:
-        case 953:
-          if (!0 === la.test(d)) return 115 === (b = d.substring(d.indexOf(':') + 1)).charCodeAt(0) ? P(d.replace('stretch', 'fill-available'), c, e, h).replace(':fill-available', ':stretch') : a.replace(b, '-webkit-' + b) + a.replace(b, '-moz-' + b.replace('fill-', '')) + a;
-          break;
-
-        case 962:
-          if (a = '-webkit-' + a + (102 === a.charCodeAt(5) ? '-ms-' + a : '') + a, 211 === e + h && 105 === a.charCodeAt(13) && 0 < a.indexOf('transform', 10)) return a.substring(0, a.indexOf(';', 27) + 1).replace(ma, '$1-webkit-$2') + a;
-      }
-
-      return a;
-    }
-
-    function L(d, c) {
-      var e = d.indexOf(1 === c ? ':' : '{'),
-          h = d.substring(0, 3 !== c ? e : 10);
-      e = d.substring(e + 1, d.length - 1);
-      return R(2 !== c ? h : h.replace(na, '$1'), e, c);
-    }
-
-    function ea(d, c) {
-      var e = P(c, c.charCodeAt(0), c.charCodeAt(1), c.charCodeAt(2));
-      return e !== c + ';' ? e.replace(oa, ' or ($1)').substring(4) : '(' + c + ')';
-    }
-
-    function H(d, c, e, h, a, m, b, v, n, q) {
-      for (var g = 0, x = c, w; g < A; ++g) {
-        switch (w = S[g].call(B, d, x, e, h, a, m, b, v, n, q)) {
-          case void 0:
-          case !1:
-          case !0:
-          case null:
-            break;
-
-          default:
-            x = w;
-        }
-      }
-
-      if (x !== c) return x;
-    }
-
-    function T(d) {
-      switch (d) {
-        case void 0:
-        case null:
-          A = S.length = 0;
-          break;
-
-        default:
-          if ('function' === typeof d) S[A++] = d;else if ('object' === typeof d) for (var c = 0, e = d.length; c < e; ++c) {
-            T(d[c]);
-          } else Y = !!d | 0;
-      }
-
-      return T;
-    }
-
-    function U(d) {
-      d = d.prefix;
-      void 0 !== d && (R = null, d ? 'function' !== typeof d ? w = 1 : (w = 2, R = d) : w = 0);
-      return U;
-    }
-
-    function B(d, c) {
-      var e = d;
-      33 > e.charCodeAt(0) && (e = e.trim());
-      V = e;
-      e = [V];
-
-      if (0 < A) {
-        var h = H(-1, c, e, e, D, z, 0, 0, 0, 0);
-        void 0 !== h && 'string' === typeof h && (c = h);
-      }
-
-      var a = M(O, e, c, 0, 0);
-      0 < A && (h = H(-2, a, e, e, D, z, a.length, 0, 0, 0), void 0 !== h && (a = h));
-      V = '';
-      E = 0;
-      z = D = 1;
-      return a;
-    }
-
-    var ca = /^\0+/g,
-        N = /[\0\r\f]/g,
-        aa = /: */g,
-        ka = /zoo|gra/,
-        ma = /([,: ])(transform)/g,
-        ia = /,\r+?/g,
-        F = /([\t\r\n ])*\f?&/g,
-        fa = /@(k\w+)\s*(\S*)\s*/,
-        Q = /::(place)/g,
-        ha = /:(read-only)/g,
-        G = /[svh]\w+-[tblr]{2}/,
-        da = /\(\s*(.*)\s*\)/g,
-        oa = /([\s\S]*?);/g,
-        ba = /-self|flex-/g,
-        na = /[^]*?(:[rp][el]a[\w-]+)[^]*/,
-        la = /stretch|:\s*\w+\-(?:conte|avail)/,
-        ja = /([^-])(image-set\()/,
-        z = 1,
-        D = 1,
-        E = 0,
-        w = 1,
-        O = [],
-        S = [],
-        A = 0,
-        R = null,
-        Y = 0,
-        V = '';
-    B.use = T;
-    B.set = U;
-    void 0 !== W && U(W);
-    return B;
-  }
+  var e="-ms-";var r="-moz-";var a="-webkit-";var n="comm";var c="rule";var s="decl";var i="@import";var h="@keyframes";var g="@layer";var k=Math.abs;var $=String.fromCharCode;var m=Object.assign;function x(e,r){return O(e,0)^45?(((r<<2^O(e,0))<<2^O(e,1))<<2^O(e,2))<<2^O(e,3):0}function y(e){return e.trim()}function j(e,r){return (e=r.exec(e))?e[0]:e}function z(e,r,a){return e.replace(r,a)}function C(e,r){return e.indexOf(r)}function O(e,r){return e.charCodeAt(r)|0}function A(e,r,a){return e.slice(r,a)}function M(e){return e.length}function S(e){return e.length}function q(e,r){return r.push(e),e}function B(e,r){return e.map(r).join("")}function D(e,r){return e.filter((function(e){return !j(e,r)}))}var E=1;var F=1;var G=0;var H=0;var I=0;var J="";function K(e,r,a,n,c,s,t,u){return {value:e,root:r,parent:a,type:n,props:c,children:s,line:E,column:F,length:t,return:"",siblings:u}}function L(e,r){return m(K("",null,null,"",null,null,0,e.siblings),e,{length:-e.length},r)}function N(e){while(e.root)e=L(e.root,{children:[e]});q(e,e.siblings);}function P(){return I}function Q(){I=H>0?O(J,--H):0;if(F--,I===10)F=1,E--;return I}function R(){I=H<G?O(J,H++):0;if(F++,I===10)F=1,E++;return I}function T(){return O(J,H)}function U(){return H}function V(e,r){return A(J,e,r)}function W(e){switch(e){case 0:case 9:case 10:case 13:case 32:return 5;case 33:case 43:case 44:case 47:case 62:case 64:case 126:case 59:case 123:case 125:return 4;case 58:return 3;case 34:case 39:case 40:case 91:return 2;case 41:case 93:return 1}return 0}function X(e){return E=F=1,G=M(J=e),H=0,[]}function Y(e){return J="",e}function Z(e){return y(V(H-1,ne(e===91?e+2:e===40?e+1:e)))}function ee(e){while(I=T())if(I<33)R();else break;return W(e)>2||W(I)>3?"":" "}function ae(e,r){while(--r&&R())if(I<48||I>102||I>57&&I<65||I>70&&I<97)break;return V(e,U()+(r<6&&T()==32&&R()==32))}function ne(e){while(R())switch(I){case e:return H;case 34:case 39:if(e!==34&&e!==39)ne(I);break;case 40:if(e===41)ne(e);break;case 92:R();break}return H}function ce(e,r){while(R())if(e+I===47+10)break;else if(e+I===42+42&&T()===47)break;return "/*"+V(r,H-1)+"*"+$(e===47?e:R())}function se(e){while(!W(T()))R();return V(e,H)}function te(e){return Y(ue("",null,null,null,[""],e=X(e),0,[0],e))}function ue(e,r,a,n,c,s,t,u,i){var f=0;var o=0;var l=t;var v=0;var p=0;var h=0;var b=1;var w=1;var d=1;var g=0;var k="";var m=c;var x=s;var y=n;var j=k;while(w)switch(h=g,g=R()){case 40:if(h!=108&&O(j,l-1)==58){if(C(j+=z(Z(g),"&","&\f"),"&\f")!=-1)d=-1;break}case 34:case 39:case 91:j+=Z(g);break;case 9:case 10:case 13:case 32:j+=ee(h);break;case 92:j+=ae(U()-1,7);continue;case 47:switch(T()){case 42:case 47:q(fe(ce(R(),U()),r,a,i),i);break;default:j+="/";}break;case 123*b:u[f++]=M(j)*d;case 125*b:case 59:case 0:switch(g){case 0:case 125:w=0;case 59+o:if(d==-1)j=z(j,/\f/g,"");if(p>0&&M(j)-l)q(p>32?oe(j+";",n,a,l-1,i):oe(z(j," ","")+";",n,a,l-2,i),i);break;case 59:j+=";";default:q(y=ie(j,r,a,f,o,c,u,k,m=[],x=[],l,s),s);if(g===123)if(o===0)ue(j,r,y,y,m,s,l,u,x);else switch(v===99&&O(j,3)===110?100:v){case 100:case 108:case 109:case 115:ue(e,y,y,n&&q(ie(e,y,y,0,0,c,u,k,c,m=[],l,x),x),c,x,l,u,n?m:x);break;default:ue(j,y,y,y,[""],x,0,u,x);}}f=o=p=0,b=d=1,k=j="",l=t;break;case 58:l=1+M(j),p=h;default:if(b<1)if(g==123)--b;else if(g==125&&b++==0&&Q()==125)continue;switch(j+=$(g),g*b){case 38:d=o>0?1:(j+="\f",-1);break;case 44:u[f++]=(M(j)-1)*d,d=1;break;case 64:if(T()===45)j+=Z(R());v=T(),o=l=M(k=j+=se(U())),g++;break;case 45:if(h===45&&M(j)==2)b=0;}}return s}function ie(e,r,a,n,s,t,u,i,f,o,l,v){var p=s-1;var h=s===0?t:[""];var b=S(h);for(var w=0,d=0,g=0;w<n;++w)for(var $=0,m=A(e,p+1,p=k(d=u[w])),x=e;$<b;++$)if(x=y(d>0?h[$]+" "+m:z(m,/&\f/g,h[$])))f[g++]=x;return K(e,r,a,s===0?c:i,f,o,l,v)}function fe(e,r,a,c){return K(e,r,a,n,$(P()),A(e,2,-2),0,c)}function oe(e,r,a,n,c){return K(e,r,a,s,A(e,0,n),A(e,n+1,-1),n,c)}function le(n,c,s){switch(x(n,c)){case 5103:return a+"print-"+n+n;case 5737:case 4201:case 3177:case 3433:case 1641:case 4457:case 2921:case 5572:case 6356:case 5844:case 3191:case 6645:case 3005:case 6391:case 5879:case 5623:case 6135:case 4599:case 4855:case 4215:case 6389:case 5109:case 5365:case 5621:case 3829:return a+n+n;case 4789:return r+n+n;case 5349:case 4246:case 4810:case 6968:case 2756:return a+n+r+n+e+n+n;case 5936:switch(O(n,c+11)){case 114:return a+n+e+z(n,/[svh]\w+-[tblr]{2}/,"tb")+n;case 108:return a+n+e+z(n,/[svh]\w+-[tblr]{2}/,"tb-rl")+n;case 45:return a+n+e+z(n,/[svh]\w+-[tblr]{2}/,"lr")+n}case 6828:case 4268:case 2903:return a+n+e+n+n;case 6165:return a+n+e+"flex-"+n+n;case 5187:return a+n+z(n,/(\w+).+(:[^]+)/,a+"box-$1$2"+e+"flex-$1$2")+n;case 5443:return a+n+e+"flex-item-"+z(n,/flex-|-self/g,"")+(!j(n,/flex-|baseline/)?e+"grid-row-"+z(n,/flex-|-self/g,""):"")+n;case 4675:return a+n+e+"flex-line-pack"+z(n,/align-content|flex-|-self/g,"")+n;case 5548:return a+n+e+z(n,"shrink","negative")+n;case 5292:return a+n+e+z(n,"basis","preferred-size")+n;case 6060:return a+"box-"+z(n,"-grow","")+a+n+e+z(n,"grow","positive")+n;case 4554:return a+z(n,/([^-])(transform)/g,"$1"+a+"$2")+n;case 6187:return z(z(z(n,/(zoom-|grab)/,a+"$1"),/(image-set)/,a+"$1"),n,"")+n;case 5495:case 3959:return z(n,/(image-set\([^]*)/,a+"$1"+"$`$1");case 4968:return z(z(n,/(.+:)(flex-)?(.*)/,a+"box-pack:$3"+e+"flex-pack:$3"),/s.+-b[^;]+/,"justify")+a+n+n;case 4200:if(!j(n,/flex-|baseline/))return e+"grid-column-align"+A(n,c)+n;break;case 2592:case 3360:return e+z(n,"template-","")+n;case 4384:case 3616:if(s&&s.some((function(e,r){return c=r,j(e.props,/grid-\w+-end/)}))){return ~C(n+(s=s[c].value),"span")?n:e+z(n,"-start","")+n+e+"grid-row-span:"+(~C(s,"span")?j(s,/\d+/):+j(s,/\d+/)-+j(n,/\d+/))+";"}return e+z(n,"-start","")+n;case 4896:case 4128:return s&&s.some((function(e){return j(e.props,/grid-\w+-start/)}))?n:e+z(z(n,"-end","-span"),"span ","")+n;case 4095:case 3583:case 4068:case 2532:return z(n,/(.+)-inline(.+)/,a+"$1$2")+n;case 8116:case 7059:case 5753:case 5535:case 5445:case 5701:case 4933:case 4677:case 5533:case 5789:case 5021:case 4765:if(M(n)-1-c>6)switch(O(n,c+1)){case 109:if(O(n,c+4)!==45)break;case 102:return z(n,/(.+:)(.+)-([^]+)/,"$1"+a+"$2-$3"+"$1"+r+(O(n,c+3)==108?"$3":"$2-$3"))+n;case 115:return ~C(n,"stretch")?le(z(n,"stretch","fill-available"),c,s)+n:n}break;case 5152:case 5920:return z(n,/(.+?):(\d+)(\s*\/\s*(span)?\s*(\d+))?(.*)/,(function(r,a,c,s,t,u,i){return e+a+":"+c+i+(s?e+a+"-span:"+(t?u:+u-+c)+i:"")+n}));case 4949:if(O(n,c+6)===121)return z(n,":",":"+a)+n;break;case 6444:switch(O(n,O(n,14)===45?18:11)){case 120:return z(n,/(.+:)([^;\s!]+)(;|(\s+)?!.+)?/,"$1"+a+(O(n,14)===45?"inline-":"")+"box$3"+"$1"+a+"$2$3"+"$1"+e+"$2box$3")+n;case 100:return z(n,":",":"+e)+n}break;case 5719:case 2647:case 2135:case 3927:case 2391:return z(n,"scroll-","scroll-snap-")+n}return n}function ve(e,r){var a="";for(var n=0;n<e.length;n++)a+=r(e[n],n,e,r)||"";return a}function pe(e,r,a,t){switch(e.type){case g:if(e.children.length)break;case i:case s:return e.return=e.return||e.value;case n:return "";case h:return e.return=e.value+"{"+ve(e.children,t)+"}";case c:if(!M(e.value=e.props.join(",")))return ""}return M(a=ve(e.children,t))?e.return=e.value+"{"+a+"}":""}function he(e){var r=S(e);return function(a,n,c,s){var t="";for(var u=0;u<r;u++)t+=e[u](a,n,c,s)||"";return t}}function be(e){return function(r){if(!r.root)if(r=r.return)e(r);}}function we(n,t,u,i){if(n.length>-1)if(!n.return)switch(n.type){case s:n.return=le(n.value,n.length,u);return;case h:return ve([L(n,{value:z(n.value,"@","@"+a)})],i);case c:if(n.length)return B(u=n.props,(function(c){switch(j(c,i=/(::plac\w+|:read-\w+)/)){case":read-only":case":read-write":N(L(n,{props:[z(c,/:(read-\w+)/,":"+r+"$1")]}));N(L(n,{props:[c]}));m(n,{props:D(u,i)});break;case"::placeholder":N(L(n,{props:[z(c,/:(plac\w+)/,":"+a+"input-$1")]}));N(L(n,{props:[z(c,/:(plac\w+)/,":"+r+"$1")]}));N(L(n,{props:[z(c,/:(plac\w+)/,e+"input-$1")]}));N(L(n,{props:[c]}));m(n,{props:D(u,i)});break}return ""}))}}
 
   // 
 
@@ -1346,96 +734,40 @@
     return phash(SEED, x);
   };
 
+  var AMP_REGEX = /&/g;
+  var COMMENT_REGEX = /^\s*\/\/.*$/gm;
   /**
-   * MIT License
-   *
-   * Copyright (c) 2016 Sultan Tarimo
-   *
-   * Permission is hereby granted, free of charge, to any person obtaining a copy of
-   * this software and associated documentation files (the "Software"),
-   * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-   * sell copies of the Software and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-   *
-   * The above copyright notice and this permission notice shall be included in all
-   * copies or substantial portions of the Software.
-   *
-   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   * OR IMPLIED INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-   * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
-   * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+   * Takes an element and recurses through it's rules added the namespace to the start of each selector.
+   * Takes into account media queries by recursing through child rules if they are present.
    */
 
-  /* eslint-disable */
-  function insertRulePlugin (insertRule) {
-    var delimiter = '/*|*/';
-    var needle = delimiter + "}";
+  function recursivelySetNamepace(compiled, namespace) {
+    return compiled.map(function (rule) {
+      if (rule.type === 'rule') {
+        // add the namespace to the start
+        rule.value = namespace + " " + rule.value; // add the namespace after each comma for subsequent selectors.
+        // @ts-expect-error we target modern browsers but intentionally transpile to ES5 for speed
 
-    function toSheet(block) {
-      if (block) {
-        try {
-          insertRule(block + "}");
-        } catch (e) {}
+        rule.value = rule.value.replaceAll(',', "," + namespace + " ");
+        rule.props = rule.props.map(function (prop) {
+          return namespace + " " + prop;
+        });
       }
-    }
 
-    return function ruleSheet(context, content, selectors, parents, line, column, length, ns, depth, at) {
-      switch (context) {
-        // property
-        case 1:
-          // @import
-          if (depth === 0 && content.charCodeAt(0) === 64) return insertRule(content + ";"), '';
-          break;
-        // selector
-
-        case 2:
-          if (ns === 0) return content + delimiter;
-          break;
-        // at-rule
-
-        case 3:
-          switch (ns) {
-            // @font-face, @page
-            case 102:
-            case 112:
-              return insertRule(selectors[0] + content), '';
-
-            default:
-              return content + (at === 0 ? delimiter : '');
-          }
-
-        case -2:
-          content.split(needle).forEach(toSheet);
+      if (Array.isArray(rule.children) && rule.type !== '@keyframes') {
+        rule.children = recursivelySetNamepace(rule.children, namespace);
       }
-    };
+
+      return rule;
+    });
   }
 
-  var COMMENT_REGEX = /^\s*\/\/.*$/gm;
   function createStylisInstance(_temp) {
     var _ref = _temp === void 0 ? EMPTY_OBJECT : _temp,
         _ref$options = _ref.options,
         options = _ref$options === void 0 ? EMPTY_OBJECT : _ref$options,
         _ref$plugins = _ref.plugins,
         plugins = _ref$plugins === void 0 ? EMPTY_ARRAY : _ref$plugins;
-
-    var stylis = new stylis_min(options); // Wrap `insertRulePlugin to build a list of rules,
-    // and then make our own plugin to return the rules. This
-    // makes it easier to hook into the existing SSR architecture
-
-    var parsingRules = []; // eslint-disable-next-line consistent-return
-
-    var returnRulesPlugin = function returnRulesPlugin(context) {
-      if (context === -2) {
-        var parsedRules = parsingRules;
-        parsingRules = [];
-        return parsedRules;
-      }
-    };
-
-    var parseRulesPlugin = insertRulePlugin(function (rule) {
-      parsingRules.push(rule);
-    });
 
     var _componentId;
 
@@ -1444,10 +776,14 @@
     var _selectorRegexp;
 
     var selfReferenceReplacer = function selfReferenceReplacer(match, offset, string) {
-      if ( // the first self-ref is always untouched
-      offset > 0 && // there should be at least two self-refs to do a replacement (.b > .b)
-      string.slice(0, offset).indexOf(_selector) !== -1 && // no consecutive self refs (.b.b); that is a precedence boost and treated differently
-      string.slice(offset - _selector.length, offset) !== _selector) {
+      if (
+      /**
+       * We only want to refer to the static class directly in the following scenarios:
+       *
+       * 1. The selector is alone on the line `& { color: red; }`
+       * 2. The selector is part of a self-reference selector `& + & { color: red; }`
+       */
+      string === _selector || string.startsWith(_selector) && string.endsWith(_selector) && string.replaceAll(_selector, '').length > 0) {
         return "." + _componentId;
       }
 
@@ -1463,35 +799,65 @@
      * The second ampersand should be a reference to the static component class. stylis
      * has no knowledge of static class so we have to intelligently replace the base selector.
      *
-     * https://github.com/thysultan/stylis.js#plugins <- more info about the context phase values
-     * "2" means this plugin is taking effect at the very end after all other processing is complete
+     * https://github.com/thysultan/stylis.js/tree/v4.0.2#abstract-syntax-structure
      */
 
 
-    var selfReferenceReplacementPlugin = function selfReferenceReplacementPlugin(context, _, selectors) {
-      if (context === 2 && selectors.length && selectors[0].lastIndexOf(_selector) > 0) {
-        // eslint-disable-next-line no-param-reassign
-        selectors[0] = selectors[0].replace(_selectorRegexp, selfReferenceReplacer);
+    var selfReferenceReplacementPlugin = function selfReferenceReplacementPlugin(element) {
+      if (element.type === c && element.value.includes('&')) {
+        element.props[0] = element.props[0] // catch any hanging references that stylis missed
+        .replace(AMP_REGEX, _selector).replace(_selectorRegexp, selfReferenceReplacer);
       }
     };
 
-    stylis.use([].concat(plugins, [selfReferenceReplacementPlugin, parseRulesPlugin, returnRulesPlugin]));
+    var middlewares = plugins.slice();
+    middlewares.push(selfReferenceReplacementPlugin);
+    /**
+     * Enables automatic vendor-prefixing for styles.
+     */
 
-    function stringifyRules(css, selector, prefix, componentId) {
+    if (options.prefix) {
+      middlewares.push(we);
+    }
+
+    middlewares.push(pe);
+
+    var stringifyRules = function stringifyRules(css, selector,
+    /**
+     * This "prefix" referes to a _selector_ prefix.
+     */
+    prefix, componentId) {
+      if (selector === void 0) {
+        selector = '';
+      }
+
+      if (prefix === void 0) {
+        prefix = '';
+      }
+
       if (componentId === void 0) {
         componentId = '&';
       }
 
-      var flatCSS = css.replace(COMMENT_REGEX, '');
-      var cssStr = selector && prefix ? prefix + " " + selector + " { " + flatCSS + " }" : flatCSS; // stylis has no concept of state to be passed to plugins
-      // but since JS is single=threaded, we can rely on that to ensure
+      // stylis has no concept of state to be passed to plugins
+      // but since JS is single-threaded, we can rely on that to ensure
       // these properties stay in sync with the current stylis run
-
       _componentId = componentId;
       _selector = selector;
       _selectorRegexp = new RegExp("\\" + _selector + "\\b", 'g');
-      return stylis(prefix || !selector ? '' : selector, cssStr);
-    }
+      var flatCSS = css.replace(COMMENT_REGEX, '');
+      var compiled = te(prefix || selector ? prefix + " " + selector + " { " + flatCSS + " }" : flatCSS);
+
+      if (options.namespace) {
+        compiled = recursivelySetNamepace(compiled, options.namespace);
+      }
+
+      var stack = [];
+      ve(compiled, he(middlewares.concat(be(function (value) {
+        return stack.push(value);
+      }))));
+      return stack;
+    };
 
     stringifyRules.hash = plugins.length ? plugins.reduce(function (acc, plugin) {
       if (!plugin.name) {

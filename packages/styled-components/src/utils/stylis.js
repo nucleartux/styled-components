@@ -1,54 +1,55 @@
-import Stylis from '@emotion/stylis';
-import { type Stringifier } from '../types';
+import * as stylis from 'stylis';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './empties';
 import throwStyledError from './error';
 import { phash, SEED } from './hash';
-import insertRulePlugin from './stylisPluginInsertRule';
 
+const AMP_REGEX = /&/g;
 const COMMENT_REGEX = /^\s*\/\/.*$/gm;
 
-type StylisInstanceConstructorArgs = {
-  options?: Object,
-  plugins?: Array<Function>,
-};
+/**
+ * Takes an element and recurses through it's rules added the namespace to the start of each selector.
+ * Takes into account media queries by recursing through child rules if they are present.
+ */
+function recursivelySetNamepace(compiled, namespace) {
+  return compiled.map(rule => {
+    if (rule.type === 'rule') {
+      // add the namespace to the start
+      rule.value = `${namespace} ${rule.value}`;
+      // add the namespace after each comma for subsequent selectors.
+      // @ts-expect-error we target modern browsers but intentionally transpile to ES5 for speed
+      rule.value = rule.value.replaceAll(',', `,${namespace} `);
+      rule.props = rule.props.map(prop => {
+        return `${namespace} ${prop}`;
+      });
+    }
+
+    if (Array.isArray(rule.children) && rule.type !== '@keyframes') {
+      rule.children = recursivelySetNamepace(rule.children, namespace);
+    }
+    return rule;
+  });
+}
 
 export default function createStylisInstance({
   options = EMPTY_OBJECT,
   plugins = EMPTY_ARRAY,
-}: StylisInstanceConstructorArgs = EMPTY_OBJECT) {
-  const stylis = new Stylis(options);
-
-  // Wrap `insertRulePlugin to build a list of rules,
-  // and then make our own plugin to return the rules. This
-  // makes it easier to hook into the existing SSR architecture
-
-  let parsingRules = [];
-
-  // eslint-disable-next-line consistent-return
-  const returnRulesPlugin = context => {
-    if (context === -2) {
-      const parsedRules = parsingRules;
-      parsingRules = [];
-      return parsedRules;
-    }
-  };
-
-  const parseRulesPlugin = insertRulePlugin(rule => {
-    parsingRules.push(rule);
-  });
-
-  let _componentId: string;
-  let _selector: string;
-  let _selectorRegexp: RegExp;
+} = EMPTY_OBJECT) {
+  let _componentId;
+  let _selector;
+  let _selectorRegexp;
 
   const selfReferenceReplacer = (match, offset, string) => {
     if (
-      // the first self-ref is always untouched
-      offset > 0 &&
-      // there should be at least two self-refs to do a replacement (.b > .b)
-      string.slice(0, offset).indexOf(_selector) !== -1 &&
-      // no consecutive self refs (.b.b); that is a precedence boost and treated differently
-      string.slice(offset - _selector.length, offset) !== _selector
+      /**
+       * We only want to refer to the static class directly in the following scenarios:
+       *
+       * 1. The selector is alone on the line `& { color: red; }`
+       * 2. The selector is part of a self-reference selector `& + & { color: red; }`
+       */
+      string === _selector ||
+      (string.startsWith(_selector) &&
+        string.endsWith(_selector) &&
+        string.replaceAll(_selector, '').length > 0)
     ) {
       return `.${_componentId}`;
     }
@@ -66,31 +67,64 @@ export default function createStylisInstance({
    * The second ampersand should be a reference to the static component class. stylis
    * has no knowledge of static class so we have to intelligently replace the base selector.
    *
-   * https://github.com/thysultan/stylis.js#plugins <- more info about the context phase values
-   * "2" means this plugin is taking effect at the very end after all other processing is complete
+   * https://github.com/thysultan/stylis.js/tree/v4.0.2#abstract-syntax-structure
    */
-  const selfReferenceReplacementPlugin = (context, _, selectors) => {
-    if (context === 2 && selectors.length && selectors[0].lastIndexOf(_selector) > 0) {
-      // eslint-disable-next-line no-param-reassign
-      selectors[0] = selectors[0].replace(_selectorRegexp, selfReferenceReplacer);
+  const selfReferenceReplacementPlugin = element => {
+    if (element.type === stylis.RULESET && element.value.includes('&')) {
+      element.props[0] = element.props[0]
+        // catch any hanging references that stylis missed
+        .replace(AMP_REGEX, _selector)
+        .replace(_selectorRegexp, selfReferenceReplacer);
     }
   };
 
-  stylis.use([...plugins, selfReferenceReplacementPlugin, parseRulesPlugin, returnRulesPlugin]);
+  const middlewares = plugins.slice();
 
-  function stringifyRules(css, selector, prefix, componentId = '&'): Stringifier {
-    const flatCSS = css.replace(COMMENT_REGEX, '');
-    const cssStr = selector && prefix ? `${prefix} ${selector} { ${flatCSS} }` : flatCSS;
+  middlewares.push(selfReferenceReplacementPlugin);
 
+  /**
+   * Enables automatic vendor-prefixing for styles.
+   */
+  if (options.prefix) {
+    middlewares.push(stylis.prefixer);
+  }
+
+  middlewares.push(stylis.stringify);
+
+  const stringifyRules = (
+    css,
+    selector = '',
+    /**
+     * This "prefix" referes to a _selector_ prefix.
+     */
+    prefix = '',
+    componentId = '&'
+  ) => {
     // stylis has no concept of state to be passed to plugins
-    // but since JS is single=threaded, we can rely on that to ensure
+    // but since JS is single-threaded, we can rely on that to ensure
     // these properties stay in sync with the current stylis run
     _componentId = componentId;
     _selector = selector;
     _selectorRegexp = new RegExp(`\\${_selector}\\b`, 'g');
 
-    return stylis(prefix || !selector ? '' : selector, cssStr);
-  }
+    const flatCSS = css.replace(COMMENT_REGEX, '');
+    let compiled = stylis.compile(
+      prefix || selector ? `${prefix} ${selector} { ${flatCSS} }` : flatCSS
+    );
+
+    if (options.namespace) {
+      compiled = recursivelySetNamepace(compiled, options.namespace);
+    }
+
+    const stack = [];
+
+    stylis.serialize(
+      compiled,
+      stylis.middleware(middlewares.concat(stylis.rulesheet(value => stack.push(value))))
+    );
+
+    return stack;
+  };
 
   stringifyRules.hash = plugins.length
     ? plugins
